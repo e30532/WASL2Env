@@ -1,0 +1,87 @@
+---
+- name: installing packages for RHELv7
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - gtk2.x86_64
+      - libXtst.x86_64 
+      - xorg-x11-fonts-Type1 
+      - psmisc.x86_64
+      - glibc.i686
+      - gtk2.i686
+      - libXtst.i686
+      - libXft.i686
+      - compat-libstdc++-33.i686 
+      - libstdc++.i686
+      - mksh
+      - pam.i686
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: installing packages for RHELv8
+  yum: 
+    name: "{{ packages}}"
+  vars:
+    packages:
+      - gtk2.x86_64
+      - libXtst.x86_64
+      - xorg-x11-fonts-Type1
+      - psmisc.x86_64
+      - libnsl.x86_64
+      - glibc.i686
+      - gtk2.i686
+      - libXtst.i686
+      - libXft.i686
+      - libXtst.i686
+      - libnsl.i686
+      - mksh
+      - pam.i686
+  when: 
+    - ansible_distribution_major_version == "8"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/IIM
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/IIM
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: checking if IIM exists or not
+  stat:
+    path: /opt/IBM/InstallationManager/eclipse/tools/imcl
+  register: iim
+
+- name: downloading and unzipping IIM
+  unarchive:
+    src: http://9.46.75.132/IIM/agent.installer.linux.gtk.x86_64_1.9.2001.20211222_1411.zip
+    dest: /root/DownloadDirector/IIM/
+    remote_src: yes
+  when: not iim.stat.exists
+
+- name: installing IIM
+  shell: /root/DownloadDirector/IIM/installc -acceptLicense
+  when: not iim.stat.exists
+
+- name: checking IIM version
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl -version
+  register: imcl_version
+
+- name: IIM version
+  debug:
+    msg: "{{ imcl_version.stdout }}"
+
+#- name: creating IIM credential
+#  shell: /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential -passportAdvantage -userName "{{ pao_uid }}" -userPassword "{{ pao_pwd }}"
+#  tags: 
+#  - IIMCred
+
+- name: checking which products have already been installed
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
+  register: imcl_listInstalledPackages
+...

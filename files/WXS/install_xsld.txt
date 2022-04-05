@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<agent-input>
+  <variables>
+    <variable name='sharedLocation' value='/opt/IBM/IMShared'/>
+  </variables>
+  <server>
+    <repository location='/root/DownloadDirector/WXSv86/WXS_8610'/>
+    <repository location='/root/DownloadDirector/WXSv8614L'/>
+  </server>
+  <profile id='IBM WebSphere eXtreme Scale Liberty Deployment' installLocation='/opt/IBM/WebSphere/eXtremeScale'>
+    <data key='cic.selector.arch' value='x86_64'/>
+    <data key='user.secret.key.temp,com.ibm.websphere.WXSLD.v86' value='{{ vncpassword }}'/>
+    <data key='user.member.name,com.ibm.websphere.WXSLD.v86' value='{{ ansible_nodename }}'/>
+    <data key='user.admin.password,com.ibm.websphere.WXSLD.v86' value='{{ vncpassword }}'/>
+    <data key='user.internal.host.name,com.ibm.websphere.WXSLD.v86' value='{{ ansible_eth1.ipv4.address }}'/>
+    <data key='user.admin.password.temp,com.ibm.websphere.WXSLD.v86' value='{{ vncpassword }}'/>
+    <data key='user.skip.config,com.ibm.websphere.WXSLD.v86' value='false'/>
+    <data key='user.cache.member.group,com.ibm.websphere.WXSLD.v86' value='cacheGroup1'/>
+    <data key='user.secret.key,com.ibm.websphere.WXSLD.v86' value='{{ vncpassword }}'/>
+    <data key='user.memory,com.ibm.websphere.WXSLD.v86' value='2'/>
+    <data key='user.start.server,com.ibm.websphere.WXSLD.v86' value='false'/>
+  </profile>
+  <install>
+    <!-- IBM WebSphere eXtreme Scale Liberty Deployment 8.6.1.4 -->
+    <offering profile='IBM WebSphere eXtreme Scale Liberty Deployment' id='com.ibm.websphere.WXSLD.v86' version='8.6.1004.20200306_0406' features='xsld.core.feature'/>
+  </install>
+  <preference name='com.ibm.cic.common.core.preferences.eclipseCache' value='${sharedLocation}'/>
+</agent-input>

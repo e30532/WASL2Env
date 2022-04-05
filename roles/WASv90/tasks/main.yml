@@ -1,0 +1,278 @@
+---
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv90
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv90
+  unarchive:
+    src: http://9.46.75.132/WASv905/was.repo.90500.nd/was.repo.90500.nd.zip
+    dest: /root/DownloadDirector/WASv90/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90J
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv90J
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv90J
+  unarchive:
+    src: http://9.46.75.132/WASv90JL/sdk.repo.8030.java8.linux.zip
+    dest: /root/DownloadDirector/WASv90J/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: installing WAS v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv90,/root/DownloadDirector/WASv90J -installationDirectory /opt/IBM/WebSphere/AppServer90ND -acceptLicense
+  when: "'com.ibm.websphere.ND.v90' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90IHS
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv90IHS
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv90IHS
+  unarchive:
+    src: http://9.46.75.132/WASv905/was.repo.90500.ihs/was.repo.90500.ihs.zip
+    dest: /root/DownloadDirector/WASv90IHS/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: installing IHS v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.IHS.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv90IHS,/root/DownloadDirector/WASv90J -installationDirectory /opt/IBM/HTTPServer90 -acceptLicense
+  when: "'com.ibm.websphere.IHS.v90' not in imcl_listInstalledPackages.stdout"
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90PLG
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file: 
+    path: /root/DownloadDirector/WASv90PLG
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv90PLG
+  unarchive:
+    src: http://9.46.75.132/WASv905/was.repo.90500.plugins/was.repo.90500.plugins.zip
+    dest: /root/DownloadDirector/WASv90PLG/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: installing Plugin v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.PLG.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv90PLG,/root/DownloadDirector/WASv90J -installationDirectory /opt/IBM/WebSphere/Plugins90 -acceptLicense 
+  when: "'com.ibm.websphere.PLG.v90' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90WCT
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file: 
+    path: /root/DownloadDirector/WASv90WCT
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv90WCT
+  unarchive:
+    src: http://9.46.75.132/WASv905/was.repo.90500.wct/was.repo.90500.wct.zip
+    dest: /root/DownloadDirector/WASv90WCT/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: installing WCT v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WCT.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv90WCT,/root/DownloadDirector/WASv90J -installationDirectory /opt/IBM/WebSphere/Toolbox90 -acceptLicense
+  when: "'com.ibm.websphere.WCT.v90' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv90APC
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv90APC
+    state: directory
+  when: not tmp_file.stat.exists
+  
+- name: downloading and unzipping WASv90APC
+  unarchive:
+    src: http://9.46.75.132/WASv905/was.repo.90500.applcient/was.repo.90500.applcient.zip
+    dest: /root/DownloadDirector/WASv90APC/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: installing APPCLIENT v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.APPCLIENT.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv90APC,/root/DownloadDirector/WASv90J -installationDirectory /opt/IBM/WebSphere/AppClient90 -acceptLicense 
+  when: "'com.ibm.websphere.APPCLIENT.v90' not in imcl_listInstalledPackages.stdout"
+
+
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv905FP11
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv905FP11
+    state: directory
+  when: not tmp_file.stat.exists
+ 
+- name: downloading and unzipping WASv905FP11
+  unarchive:
+    src: http://9.46.75.132/WASv905FP11/9.0.5-WS-WAS-FP011.zip
+    dest: /root/DownloadDirector/WASv905FP11/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/Java8075
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/Java8075
+    state: directory
+  when: not tmp_file.stat.exists
+ 
+- name: downloading and unzipping Java8075
+  unarchive:
+    src: http://9.46.75.132/Java8075/ibm-java-sdk-8.0-7.5-linux-x64-installmgr.zip
+    dest: /root/DownloadDirector/Java8075/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: updating WAS v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv905FP11,/root/DownloadDirector/Java8075 -installationDirectory /opt/IBM/WebSphere/AppServer90ND -acceptLicense
+  when: "'com.ibm.websphere.ND.v90' not in imcl_listInstalledPackages.stdout"
+
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv905FP11IHSPLG
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv905FP11IHSPLG
+    state: directory
+  when: not tmp_file.stat.exists
+ 
+- name: downloading and unzipping WASv905FP11IHSPLG
+  unarchive:
+    src: http://9.46.75.132/WASv905FP11IHSPLG/9.0.5-WS-IHSPLG-FP011.zip
+    dest: /root/DownloadDirector/WASv905FP11IHSPLG/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: updating IHS v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.IHS.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv905FP11IHSPLG,/root/DownloadDirector/Java8075 -installationDirectory /opt/IBM/HTTPServer90 -acceptLicense
+  when: "'com.ibm.websphere.IHS.v90' not in imcl_listInstalledPackages.stdout"
+
+- name: updating Plugin v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.PLG.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv905FP11IHSPLG,/root/DownloadDirector/Java8075 -installationDirectory /opt/IBM/WebSphere/Plugins90 -acceptLicense
+  when: "'com.ibm.websphere.PLG.v90' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv905FP11WCT
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv905FP11WCT
+    state: directory
+  when: not tmp_file.stat.exists
+ 
+- name: downloading and unzipping WASv905FP11WCT
+  unarchive:
+    src: http://9.46.75.132/WASv905FP11WCT/9.0.5-WS-WCT-FP011.zip
+    dest: /root/DownloadDirector/WASv905FP11WCT/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: updating WCT v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WCT.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv905FP11WCT,/root/DownloadDirector/Java8075 -installationDirectory /opt/IBM/WebSphere/Toolbox90 -acceptLicense
+  when: "'com.ibm.websphere.WCT.v90' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv905FP11APPCLT
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv905FP11APPCLT
+    state: directory
+  when: not tmp_file.stat.exists
+ 
+- name: downloading and unzipping WASv905FP11APPCLT
+  unarchive:
+    src: http://9.46.75.132/WASv905FP11APPCLT/9.0.5-WS-APPCLT-FP011.zip
+    dest: /root/DownloadDirector/WASv905FP11APPCLT/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: updating APPCLIENT v9
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.APPCLIENT.v90 com.ibm.java.jdk.v8 -repositories /root/DownloadDirector/WASv905FP11APPCLT,/root/DownloadDirector/Java8075 -installationDirectory /opt/IBM/WebSphere/AppClient90 -acceptLicense -installFixes none
+  when: "'com.ibm.websphere.APPCLIENT.v90' not in imcl_listInstalledPackages.stdout"
+
+- name: checking which products have already been installed
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
+  register: imcl_listInstalledPackages
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/ifixes/WASv90/PH44602
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/ifixes/WASv90/PH44602
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading ifix of PH44602 for WASv9.0.5.11
+  unarchive:
+    src: http://9.46.75.132/ifixes/9.0.5.11-ws-was-ifph44602.zip
+    dest: /root/DownloadDirector/ifixes/WASv90/PH44602/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v90_9.0.5011' in imcl_listInstalledPackages.stdout and '9.0.5.11-WS-WAS-IFPH44602' not in imcl_listInstalledPackages.stdout"
+
+- name: installing PH44602 for WASv9.0.5.11
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install 9.0.5.11-WS-WAS-IFPH44602_9.0.5011.20220323_0734 -repositories /root/DownloadDirector/ifixes/WASv90/PH44602/ -installationDirectory /opt/IBM/WebSphere/AppServer90ND
+  when: "'com.ibm.websphere.ND.v90_9.0.5011' in imcl_listInstalledPackages.stdout and '9.0.5.11-WS-WAS-IFPH44602' not in imcl_listInstalledPackages.stdout"
+...

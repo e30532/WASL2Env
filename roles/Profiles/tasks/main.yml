@@ -1,0 +1,89 @@
+---
+- name: checking if v9 profiles exists
+  stat:
+    path: /opt/IBM/WebSphere/AppServer90ND/profiles
+  register: v9profiles
+
+- name: creating WAS v9 AS profile
+  shell: /opt/IBM/WebSphere/AppServer90ND/bin/manageprofiles.sh -create -profileName AppSrv01 -templatePath /opt/IBM/WebSphere/AppServer90ND/profileTemplates/default -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v9profiles.stat.exists
+    
+- name: creating WAS v9 DM profile
+  shell: /opt/IBM/WebSphere/AppServer90ND/bin/manageprofiles.sh -create -profileName Dmgr01 -templatePath /opt/IBM/WebSphere/AppServer90ND/profileTemplates/management -serverType DEPLOYMENT_MANAGER -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v9profiles.stat.exists
+
+- name: starting v9 DM
+  shell: /opt/IBM/WebSphere/AppServer90ND/profiles/Dmgr01/bin/startManager.sh
+  when: not v9profiles.stat.exists
+  
+- name: creating WAS v9 Custom profile
+  shell: /opt/IBM/WebSphere/AppServer90ND/bin/manageprofiles.sh -create -profileName Custom01 -templatePath /opt/IBM/WebSphere/AppServer90ND/profileTemplates/managed -dmgrHost localhost -dmgrPort 8879 -dmgrAdminUserName admin -dmgrAdminPassword admin
+  when: not v9profiles.stat.exists
+
+- name: stopping v9 Nodeagent
+  shell: /opt/IBM/WebSphere/AppServer90ND/profiles/Custom01/bin/stopNode.sh -user admin -password admin
+  when: not v9profiles.stat.exists
+    
+- name: stopping v9 DM
+  shell: /opt/IBM/WebSphere/AppServer90ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+  when: not v9profiles.stat.exists
+
+- name: checking if v85 profiles exists
+  stat:
+    path: /opt/IBM/WebSphere/AppServer85ND/profiles
+  register: v85profiles
+  
+- name: creating WAS v85 AS profile
+  shell: /opt/IBM/WebSphere/AppServer85ND/bin/manageprofiles.sh -create -profileName AppSrv01 -templatePath /opt/IBM/WebSphere/AppServer85ND/profileTemplates/default -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v85profiles.stat.exists
+    
+- name: creating WAS v85 DM profile
+  shell: /opt/IBM/WebSphere/AppServer85ND/bin/manageprofiles.sh -create -profileName Dmgr01 -templatePath /opt/IBM/WebSphere/AppServer85ND/profileTemplates/management -serverType DEPLOYMENT_MANAGER -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v85profiles.stat.exists
+
+- name: starting v85 DM
+  shell: /opt/IBM/WebSphere/AppServer85ND/profiles/Dmgr01/bin/startManager.sh
+  when: not v85profiles.stat.exists
+
+- name: creating WAS v85 Custom profile
+  shell: /opt/IBM/WebSphere/AppServer85ND/bin/manageprofiles.sh -create -profileName Custom01 -templatePath /opt/IBM/WebSphere/AppServer85ND/profileTemplates/managed -dmgrHost localhost -dmgrPort 8879 -dmgrAdminUserName admin -dmgrAdminPassword admin
+  when: not v85profiles.stat.exists
+
+- name: stopping v85 Nodeagent
+  shell: /opt/IBM/WebSphere/AppServer85ND/profiles/Custom01/bin/stopNode.sh -user admin -password admin
+  when: not v85profiles.stat.exists
+  
+- name: stopping v85 DM
+  shell: /opt/IBM/WebSphere/AppServer85ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+  when: not v85profiles.stat.exists
+
+- name: checking if v80 profiles exists
+  stat:
+    path: /opt/IBM/WebSphere/AppServer80ND/profiles
+  register: v80profiles
+
+- name: creating WAS v80 AS profile
+  shell: /opt/IBM/WebSphere/AppServer80ND/bin/manageprofiles.sh -create -profileName AppSrv01 -templatePath /opt/IBM/WebSphere/AppServer80ND/profileTemplates/default -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v80profiles.stat.exists
+
+- name: creating WAS v80 DM profile
+  shell: 
+    export LANG=en_US.utf8;export LC_CTYPE=en_US.utf8;/opt/IBM/WebSphere/AppServer80ND/bin/manageprofiles.sh -create -profileName Dmgr01 -templatePath /opt/IBM/WebSphere/AppServer80ND/profileTemplates/management -serverType DEPLOYMENT_MANAGER -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v80profiles.stat.exists
+
+- name: starting v80 DM
+  shell: /opt/IBM/WebSphere/AppServer80ND/profiles/Dmgr01/bin/startManager.sh
+  when: not v80profiles.stat.exists  
+
+- name: creating WAS v80 Custom profile
+  shell: /opt/IBM/WebSphere/AppServer80ND/bin/manageprofiles.sh -create -profileName Custom01 -templatePath /opt/IBM/WebSphere/AppServer80ND/profileTemplates/managed -dmgrHost localhost -dmgrPort 8879 -dmgrAdminUserName admin -dmgrAdminPassword admin
+  when: not v80profiles.stat.exists
+
+- name: stopping v80 Nodeagent
+  shell: /opt/IBM/WebSphere/AppServer80ND/profiles/Custom01/bin/stopNode.sh -user admin -password admin
+  when: not v80profiles.stat.exists
+  
+- name: stopping v80 DM
+  shell: /opt/IBM/WebSphere/AppServer80ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+  when: not v80profiles.stat.exists
+...

@@ -1,0 +1,26 @@
+---
+- name: checking if tmp directory exists or not
+  stat:
+    path: /opt/IBM/wlp{{ version }}
+  register: tmp_file 
+
+- name: downloading wlp-nd-all-{{ version }}.jar
+  get_url:
+    url: http://9.46.75.132/WLP/wlp-nd-all-{{ version }}.jar
+    dest: /root/DownloadDirector/
+  when: not tmp_file.stat.exists
+
+- name: installing...
+  shell: /opt/IBM/WebSphere/AppServer90ND/java/8.0/jre/bin/java -jar /root/DownloadDirector/wlp-nd-all-{{ version }}.jar -acceptLicense /opt/IBM/wlp{{ version }}
+  when: not tmp_file.stat.exists
+
+- name: creating wlp/etc
+  file:
+    path: /opt/IBM/wlp{{ version }}/wlp/etc
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: setting java
+  shell: echo "JAVA_HOME=/opt/IBM/WebSphere/AppServer90ND/java/8.0/jre" > /opt/IBM/wlp{{ version }}/wlp/etc/server.env
+  when: not tmp_file.stat.exists
+...

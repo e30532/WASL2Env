@@ -1,0 +1,248 @@
+---
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 ND 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_1_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: downloading and unzipping WASv85 ND 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_2_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: downloading and unzipping WASv85 ND 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_3_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: installing WAS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v85 -repositories /root/DownloadDirector/WASv85 -installationDirectory /opt/IBM/WebSphere/AppServer85ND -acceptLicense
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85S
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85S
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Supl 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85S/WAS_V85_SUPPL_1_OF_3.zip
+    dest: /root/DownloadDirector/WASv85S/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: downloading and unzipping WASv85 Supl 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85S/WAS_V85_SUPPL_2_OF_3.zip
+    dest: /root/DownloadDirector/WASv85S/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: downloading and unzipping WASv85 Supl 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85S/WAS_V85_SUPPL_3_OF_3.zip
+    dest: /root/DownloadDirector/WASv85S/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+
+
+- name: installing IHS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.IHS.v85 -repositories /root/DownloadDirector/WASv85S -installationDirectory /opt/IBM/HTTPServer85 -acceptLicense -properties "user.ihs.httpPort=80,user.ihs.allowNonRootSilentInstall=true"
+  when: "'com.ibm.websphere.IHS.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: installing Plugin v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.PLG.v85 -repositories /root/DownloadDirector/WASv85S -installationDirectory /opt/IBM/WebSphere/Plugins85 -acceptLicense
+  when: "'com.ibm.websphere.PLG.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: installing WCT v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WCT.v85 -repositories /root/DownloadDirector/WASv85S -installationDirectory /opt/IBM/WebSphere/Toolbox85 -acceptLicense
+  when: "'com.ibm.websphere.WCT.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: installing APPCLIENT v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.APPCLIENT.v85 -repositories /root/DownloadDirector/WASv85S -installationDirectory /opt/IBM/WebSphere/AppClient85 -acceptLicense -properties "user.appclient.serverHostname=localhost,user.appclient.serverPort=2809"
+  when: "'com.ibm.websphere.APPCLIENT.v85' not in imcl_listInstalledPackages.stdout"
+
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85FP21
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85FP21
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part1.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part2.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part3.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/ifixes/APPCLIENTv85/PH44554
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/ifixes/APPCLIENTv85/PH44554
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading ifix of PH44554 for AppClient v8.5.5.21
+  unarchive:
+    src: http://9.46.75.132/ifixes/8.5.5.21-ws-appclient-multios-ifph44554.zip
+    dest: /root/DownloadDirector/ifixes/APPCLIENTv85/PH44554/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: updating WAS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v85 -repositories /root/DownloadDirector/WASv85FP21 -installationDirectory /opt/IBM/WebSphere/AppServer85ND -acceptLicense 
+  when: "'com.ibm.websphere.ND.v85' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85FP21S
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85FP21S
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Sup 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21S/8.5.5-WS-WASSupplements-FP021-part1.zip
+    dest: /root/DownloadDirector/WASv85FP21S/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Sup 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21S/8.5.5-WS-WASSupplements-FP021-part2.zip
+    dest: /root/DownloadDirector/WASv85FP21S/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Sup 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21S/8.5.5-WS-WASSupplements-FP021-part3.zip
+    dest: /root/DownloadDirector/WASv85FP21S/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: updating IHS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.IHS.v85 -repositories /root/DownloadDirector/WASv85FP21S -installationDirectory /opt/IBM/HTTPServer85 -acceptLicense 
+  when: "'com.ibm.websphere.IHS.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: updating Plugin v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.PLG.v85 -repositories /root/DownloadDirector/WASv85FP21S -installationDirectory /opt/IBM/WebSphere/Plugins85 -acceptLicense
+  when: "'com.ibm.websphere.PLG.v85' not in imcl_listInstalledPackages.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85FP21WCT
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85FP21WCT
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Sup 1 of 2
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21WCT/8.5.5-WS-WCT-FP021-part1.zip
+    dest: /root/DownloadDirector/WASv85FP21WCT/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 Sup 2 of 2
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21WCT/8.5.5-WS-WCT-FP021-part2.zip
+    dest: /root/DownloadDirector/WASv85FP21WCT/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+
+- name: updating WCT v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WCT.v85 -repositories /root/DownloadDirector/WASv85FP21WCT -installationDirectory /opt/IBM/WebSphere/Toolbox85 -acceptLicense 
+  when: "'com.ibm.websphere.WCT.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: updating APPCLIENT v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.APPCLIENT.v85 8.5.5.21-WS-AppClient-MultiOS-IFPH44554_8.5.5021.20220304_1227 -repositories /root/DownloadDirector/WASv85FP21S,/root/DownloadDirector/ifixes/APPCLIENTv85/PH44554 -installationDirectory /opt/IBM/WebSphere/AppClient85 -acceptLicense
+  when: "'com.ibm.websphere.APPCLIENT.v85' not in imcl_listInstalledPackages.stdout"
+
+- name: checking which products have already been installed
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
+  register: imcl_listInstalledPackages
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/ifixes/WASv85/PH44602
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/ifixes/WASv85/PH44602
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading ifix of PH44602 for WASv8.5.5.21
+  unarchive:
+    src: http://9.46.75.132/ifixes/8.5.5.21-ws-was-ifph44602.zip
+    dest: /root/DownloadDirector/ifixes/WASv85/PH44602/
+    remote_src: yes
+  when: "'com.ibm.websphere.ND.v85_8.5.5021' in imcl_listInstalledPackages.stdout and '8.5.5.21-WS-WAS-IFPH44602' not in imcl_listInstalledPackages.stdout"
+
+- name: installing PH44602 for WASv8.5.5.21
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install 8.5.5.21-WS-WAS-IFPH44602_8.5.5021.20220303_1006 -repositories /root/DownloadDirector/ifixes/WASv85/PH44602/ -installationDirectory /opt/IBM/WebSphere/AppServer85ND
+  when: "'com.ibm.websphere.ND.v85_8.5.5021' in imcl_listInstalledPackages.stdout and '8.5.5.21-WS-WAS-IFPH44602' not in imcl_listInstalledPackages.stdout"
+...

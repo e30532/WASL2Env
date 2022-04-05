@@ -1,0 +1,70 @@
+---
+- name: installing Server GUI env
+  shell: yum groupinstall "Server with GUI" -y
+
+- name: installing tigervnc packages
+  shell: yum -y install tigervnc-server tigervnc
+
+
+- name: creating a group
+  group: 
+    name: "{{ vncuser }}"
+
+- name: creating a user
+  user: 
+    name: "{{ vncuser }}"
+    group: "{{ vncuser }}"
+    password: "{{ vncpassword|password_hash('sha512','salt') }}"
+
+- name: Create .vnc directory for VNC user
+  file:
+    path: /home/{{ vncuser }}/.vnc
+    state: directory
+    mode: 0755
+    owner: "{{ vncuser }}"
+    group: "{{ vncuser }}"
+
+- name: Set VNC password for VNC user
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo {{ vncpassword }} | vncpasswd -f > /home/{{ vncuser }}/.vnc/passwd
+  args:
+    executable: /bin/bash
+    creates: /home/"{{ vncuser }}"/.vnc/passwd
+
+- name: Set correct permissions for VNC passwd file
+  ansible.builtin.file:
+    path: /home/{{ vncuser }}/.vnc/passwd
+    owner: "{{ vncuser }}"
+    group: "{{ vncuser }}"
+    mode: 0600
+
+
+- name: copy a config file
+  shell: cp /usr/lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@.service
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: modify the config file
+  shell: sed -i -e 's/<USER>/{{ vncuser }}/' /etc/systemd/system/vncserver@.service
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: modify the config file
+  shell: 
+    echo ':1={{ vncuser }}'>> /etc/tigervnc/vncserver.users;
+    echo 'session=gnome' > /home/{{ vncuser }}/.vnc/config; 
+    echo 'securitytypes=vncauth,tlsvnc' >> /home/{{ vncuser }}/.vnc/config; 
+    echo 'desktop=sandbox' >> /home/{{ vncuser }}/.vnc/config;
+    echo 'geometry=1366x768' >> /home/{{ vncuser }}/.vnc/config; 
+    echo 'alwaysshared' >> /home/{{ vncuser }}/.vnc/config;
+  when:
+    - ansible_distribution_major_version == "8"
+
+- name: daemon-reload
+  shell: systemctl daemon-reload
+- name: start vnc service
+  shell: systemctl start vncserver@:1
+- name: enable vnc service
+  shell: systemctl enable vncserver@:1
+...

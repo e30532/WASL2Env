@@ -1,0 +1,261 @@
+---
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WXSv86
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WXSv86
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WXSv86
+  unarchive:
+    src: http://9.46.75.132/WXSv86/WS_XSCALE_V8.6_MP_ML.zip
+    dest: /root/DownloadDirector/WXSv86/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 ND 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_1_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 ND 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_2_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 ND 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85/WAS_ND_V8.5_3_OF_3.zip
+    dest: /root/DownloadDirector/WASv85/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: checking which products have already been installed
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl listInstallationDirectories
+  register: imcl_listInstallationDirectories
+    
+- name: installing WAS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v85 -repositories /root/DownloadDirector/WASv85 -installationDirectory /opt/IBM/WebSphere/AppServer85WXS -acceptLicense 
+  when: "'/opt/IBM/WebSphere/AppServer85WXS' not in imcl_listInstallationDirectories.stdout"
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WASv85FP21
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WASv85FP21
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 1 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part1.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 2 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part2.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WASv85 3 of 3
+  unarchive:
+    src: http://9.46.75.132/WASv85FP21/8.5.5-WS-WAS-FP021-part3.zip
+    dest: /root/DownloadDirector/WASv85FP21/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: updating WAS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.ND.v85 -repositories /root/DownloadDirector/WASv85FP21 -installationDirectory /opt/IBM/WebSphere/AppServer85WXS -acceptLicense 
+  when: "'/opt/IBM/WebSphere/AppServer85WXS' not in imcl_listInstallationDirectories.stdout"
+
+- name: checking ifixes
+  shell: /opt/IBM/WebSphere/AppServer85WXS/bin/versionInfo.sh -ifixes
+  register: ifixes
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/ifixes/WASv85/PH44602
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/ifixes/WASv85/PH44602
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading ifix of PH44602 for WASv8.5.5.21
+  unarchive:
+    src: http://9.46.75.132/ifixes/8.5.5.21-ws-was-ifph44602.zip
+    dest: /root/DownloadDirector/ifixes/WASv85/PH44602/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+  
+- name: installing PH44602 for WASv8.5.5.21
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install 8.5.5.21-WS-WAS-IFPH44602_8.5.5021.20220303_1006 -repositories /root/DownloadDirector/ifixes/WASv85/PH44602/ -installationDirectory /opt/IBM/WebSphere/AppServer85WXS
+  when: "'PH44602' not in ifixes.stdout"
+
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WXSv8615W
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WXSv8615W
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WXSv8615W
+  unarchive:
+    src: http://9.46.75.132/WXSv8615W/8.6.1.5-WS-WXS-WAS-FP.zip
+    dest: /root/DownloadDirector/WXSv8615W/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+
+- name: installing WXS v86 on top of WAS v85
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WXS.was8.v86 -repositories /root/DownloadDirector/WXSv86/WXS_8610,/root/DownloadDirector/WXSv8615W -installationDirectory /opt/IBM/WebSphere/AppServer85WXS -acceptLicense 
+  when: "'/opt/IBM/WebSphere/AppServer85WXS' not in imcl_listInstallationDirectories.stdout"
+
+
+- name: checking if WAS 85 WXS profiles exists
+  stat:
+    path: /opt/IBM/WebSphere/AppServer85WXS/profiles
+  register: v85wxsprofiles
+    
+- name: creating WAS v85WXS DM profile
+  shell: /opt/IBM/WebSphere/AppServer85WXS/bin/manageprofiles.sh -create -profileName Dmgr01 -templatePath /opt/IBM/WebSphere/AppServer85WXS/profileTemplates/xs_augment/management -serverType DEPLOYMENT_MANAGER -defaultPorts -enableAdminSecurity true -adminUserName admin -adminPassword admin
+  when: not v85wxsprofiles.stat.exists
+
+- name: starting v85WXS DM
+  shell: /opt/IBM/WebSphere/AppServer85WXS/profiles/Dmgr01/bin/startManager.sh
+  when: not v85wxsprofiles.stat.exists
+  
+- name: creating WAS v85WXS Custom profile
+  shell: /opt/IBM/WebSphere/AppServer85WXS/bin/manageprofiles.sh -create -profileName Custom01 -templatePath /opt/IBM/WebSphere/AppServer85WXS/profileTemplates/xs_augment/managed -dmgrHost localhost -dmgrPort 8879 -dmgrAdminUserName admin -dmgrAdminPassword admin
+  when: not v85wxsprofiles.stat.exists
+
+- name: stopping v85WXS Nodeagent
+  shell: /opt/IBM/WebSphere/AppServer85WXS/profiles/Custom01/bin/stopNode.sh -user admin -password admin
+  when: not v85wxsprofiles.stat.exists
+    
+- name: stopping v85WXS DM
+  shell: /opt/IBM/WebSphere/AppServer85WXS/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+  when: not v85wxsprofiles.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WXSv8615S
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WXSv8615S
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping WXSv8615S
+  unarchive:
+    src: http://9.46.75.132/WXSv8615S/8.6.1.5-WS-WXS-FP.zip
+    dest: /root/DownloadDirector/WXSv8615S/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: installing WXS v86 Standalone
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WXS.v86,xs.server.standalone.feature,xs.client.standalone.feature,xs.console.feature -repositories /root/DownloadDirector/WXSv86/WXS_8610,/root/DownloadDirector/WXSv8615S -installationDirectory /opt/IBM/WebSphere/eXtremeScaleStandalone -acceptLicense -installFixes none
+  when: "'/opt/IBM/WebSphere/eXtremeScaleStandalone' not in imcl_listInstallationDirectories.stdout"
+
+
+- name: checking which products have already been installed
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl listInstalledPackages
+  register: imcl_listInstalledPackages
+  
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WXSv8614L
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WXSv8614L
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping XSLD
+  unarchive:
+    src: http://9.46.75.132/WXSv8614L/8.6.1.4-WS-WXS-XSLD-FP.zip
+    dest: /root/DownloadDirector/WXSv8614L
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/WXSv8615L
+  register: tmp_file
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/WXSv8615L
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping XSLD
+  unarchive:
+    src: http://9.46.75.132/WXSv8615L/8.6.1.5-WS-WXS-XSLD-FP.zip
+    dest: /root/DownloadDirector/WXSv8615L
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: copy XSLD response files 
+  template: src=files/WXS/{{ item }} dest=/tmp/
+  with_items:
+    - install_xsld.txt
+
+- name: installing XSLD
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense input /tmp/install_xsld.txt -log /tmp/install_xsld.log
+  when: "'com.ibm.websphere.WXSLD' not in imcl_listInstalledPackages.stdout"
+
+- name: stopping XSLD
+  shell: /opt/IBM/WebSphere/eXtremeScale/wxs/stopXSLD.sh
+  ignore_errors: yes
+  when: "'com.ibm.websphere.WXSLD' not in imcl_listInstalledPackages.stdout"
+
+- name: updating XSLD
+  shell: /opt/IBM/InstallationManager/eclipse/tools/imcl install com.ibm.websphere.WXSLD.v86 -repositories /root/DownloadDirector/WXSv8615L -installationDirectory /opt/IBM/WebSphere/eXtremeScale -acceptLicense
+  when: "'com.ibm.websphere.WXSLD' not in imcl_listInstalledPackages.stdout"
+...

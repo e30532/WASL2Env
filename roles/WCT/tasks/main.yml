@@ -1,0 +1,57 @@
+---
+- name: copy wct response files 
+  template: src=files/WCT/{{ item }} dest=/tmp/
+  with_items:
+    - wct80_as.resp
+    - wct80_nd.resp
+    - wct85_as.resp
+    - wct85_nd.resp
+    - wct90_as.resp
+    - wct90_nd.resp
+
+- name: defining webserver1 (v90 ND)
+  shell: /opt/IBM/WebSphere/Toolbox90/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins90 -defLocName Plugins90 -createDefinition -response /tmp/wct90_nd.resp
+- name: starting dmgr
+  shell: /opt/IBM/WebSphere/AppServer90ND/profiles/Dmgr01/bin/startManager.sh
+- name: configuring webserver1 (v90 ND)
+  shell: /opt/IBM/WebSphere/Plugins90/bin/configurewebserver1.sh -user admin -password admin
+- name: stopping dmgr
+  shell: /opt/IBM/WebSphere/AppServer90ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+- name: defining and configuring webserver1 (v90 AS)
+  shell: /opt/IBM/WebSphere/Toolbox90/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins90 -defLocName Plugins90 -createDefinition -response /tmp/wct90_as.resp
+
+
+- name: defining webserver1 (v85 ND)
+  shell: /opt/IBM/WebSphere/Toolbox85/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins85 -defLocName Plugins85 -createDefinition -response /tmp/wct85_nd.resp
+- name: starting dmgr
+  shell: /opt/IBM/WebSphere/AppServer85ND/profiles/Dmgr01/bin/startManager.sh
+- name: configuring webserver1 (v85 ND)
+  shell: /opt/IBM/WebSphere/Plugins85/bin/configurewebserver1.sh -user admin -password admin
+- name: stopping dmgr
+  shell: /opt/IBM/WebSphere/AppServer85ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+- name: defining and configuring webserver1 (v85 AS)
+  shell: /opt/IBM/WebSphere/Toolbox85/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins85 -defLocName Plugins85 -createDefinition -response /tmp/wct85_as.resp
+
+
+- name: setting webServerHostName for Plugin80
+  replace:
+    dest: /tmp/wct80_nd.resp
+    regexp: tmphostname
+    replace: '{{ ansible_hostname }}'
+- name: setting webServerHostName for Plugin80
+  replace:
+    dest: /tmp/wct80_as.resp
+    regexp: tmphostname
+    replace: '{{ ansible_hostname }}'
+- name: defining webserver1 (v80 ND)
+  shell: /opt/IBM/WebSphere/Toolbox80/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins80 -defLocName Plugins80 -createDefinition -response /tmp/wct80_nd.resp
+- name: starting dmgr
+  shell: /opt/IBM/WebSphere/AppServer80ND/profiles/Dmgr01/bin/startManager.sh
+- name: configuring webserver1 (v80 ND)
+  shell: /opt/IBM/WebSphere/Plugins80/bin/configurewebserver1.sh -user admin -password admin
+- name: stopping dmgr
+  shell: /opt/IBM/WebSphere/AppServer80ND/profiles/Dmgr01/bin/stopManager.sh -user admin -password admin
+- name: defining and configuring webserver1 (v80 AS)
+  shell: /opt/IBM/WebSphere/Toolbox80/WCT/wctcmd.sh -tool pct -defLocPathname /opt/IBM/WebSphere/Plugins80 -defLocName Plugins80 -createDefinition -response /tmp/wct80_as.resp
+
+...

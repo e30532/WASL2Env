@@ -1,0 +1,51 @@
+---
+- name: installing packages for RHELv7
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - mksh
+      - pam.i686
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/DB2
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/DB2
+    state: directory
+  when: not tmp_file.stat.exists
+
+- name: downloading and unzipping DB2
+  unarchive:
+    src: http://9.46.75.132/DB2/v11.5.7_linuxx64_server_dec.tar.gz
+    dest: /root/DownloadDirector/DB2/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+- name: downloading a response file
+  get_url:
+     url: http://9.46.75.132/DB2/db2server.rsp
+     dest: /tmp
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /opt/ibm/db2
+  register: tmp_file
+
+- name: installing DB2
+  shell: /root/DownloadDirector/DB2/server_dec/db2setup -r /tmp/db2server.rsp
+  when: not tmp_file.stat.exists
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /home/db2inst1/db2inst1/NODE0000/WASDB
+  register: tmp_file
+
+- name: creating a database 
+  shell: bash -lc "db2 create database WASDB"
+  become_user: db2inst1
+  when: not tmp_file.stat.exists 
+...

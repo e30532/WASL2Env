@@ -1,0 +1,65 @@
+---
+- name: Add or modify nofile soft limit for the user mqm
+  pam_limits:
+    domain: mqm
+    limit_type: '-'
+    limit_item: nofile
+    value: 10240
+
+- name: copy mq conf files 
+  copy: src=files/MQ/{{ item }} dest=/tmp/
+  with_items:
+    - mq.ini
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /root/DownloadDirector/MQ
+  register: tmp_file 
+
+- name: creating a tmp download directory
+  file:
+    path: /root/DownloadDirector/MQ
+    state: directory
+  when: not tmp_file.stat.exists
+
+
+- name: downloading and unzipping MQ
+  unarchive:
+    src: http://9.46.75.132/MQ/IBM_MQ_9.2.0.5_LINUX_X86-64.tar.gz
+    dest: /root/DownloadDirector/MQ/
+    remote_src: yes
+  when: not tmp_file.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /opt/mqm
+  register: tmp_file 
+
+- name: accepting license
+  shell: /root/DownloadDirector/MQ/MQServer/mqlicense.sh -accept
+  when: not tmp_file.stat.exists
+
+- name: installing MQ
+  shell: rpm -ivh /root/DownloadDirector/MQ/MQServer/MQSeries*.rpm
+  when: not tmp_file.stat.exists
+
+
+- name: checking if tmp directory exists or not
+  stat:
+    path: /var/mqm/qmgrs/TESTQM
+  register: tmp_file 
+
+- name: copy mq response files 
+  copy: src=files/MQ/{{ item }} dest=/tmp/
+  with_items:
+    - mq.ini
+
+- name: configuring MQ
+  shell: . /opt/mqm/bin/setmqenv -s;
+         crtmqm TESTQM;
+         strmqm TESTQM;
+         runmqsc TESTQM < /tmp/mq.ini;
+  become_user: mqm
+  when: not tmp_file.stat.exists
+...

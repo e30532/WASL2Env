@@ -1,0 +1,55 @@
+---
+- name: copy ldif files
+  template: src=files/LDAP/{{ item }} dest=/tmp/
+  with_items:
+    - base.ldif
+    - user.ldif
+
+- name: installing 389 directory server for RHEL7
+  shell: yum install 389-ds-base.x86_64 -y
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: installing 389 directory server (1/3)
+  shell: dnf module enable 389-ds -y
+  when: 
+    - ansible_distribution_major_version == "8"
+
+- name: installing 389 directory server (2/3)
+  shell: dnf install 389-ds-base -y
+  when: 
+    - ansible_distribution_major_version == "8"
+
+- name: installing 389 directory server (3/3)
+  shell: dnf install 389-ds-base-devel -y
+  when: 
+    - ansible_distribution_major_version == "8"
+
+
+- name: creating a config file
+  shell: dscreate create-template /tmp/ds01.inf
+
+- name: configuring the config file (1/5)
+  shell: sed -i -e 's/;instance_name = localhost/instance_name = ds01/' /tmp/ds01.inf
+
+- name: configuring the config file (2/5)
+  shell: sed -i -e 's/;root_password = Directory_Manager_Password/root_password = {{ vncpassword }}/' /tmp/ds01.inf
+
+- name: configuring the config file (3/5)
+  shell: sed -i -e 's/;self_sign_cert_valid_months = 24/self_sign_cert_valid_months = 240/' /tmp/ds01.inf
+
+- name: configuring the config file (4/5)
+  shell: sed -i -e 's/;create_suffix_entry = False/create_suffix_entry = True/' /tmp/ds01.inf
+
+- name: configuring the config file (5/5)
+  shell: sed -i -e 's/;suffix =/suffix = dc=ibm,dc=com/' /tmp/ds01.inf
+
+- name: creating an instance
+  shell: dscreate from-file /tmp/ds01.inf
+
+- name: importing a group ldif
+  shell: ldapadd -D "cn=Directory Manager" -w {{ vncpassword }} -p 389 -h localhost -f /tmp/base.ldif
+
+- name: importing a user ldif
+  shell: ldapadd -D "cn=Directory Manager" -w {{ vncpassword }} -p 389 -h localhost -f /tmp/user.ldif
+...

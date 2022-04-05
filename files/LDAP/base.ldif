@@ -1,0 +1,9 @@
+dn: cn=wasl2,dc=ibm,dc=com
+objectClass: posixGroup
+gidNumber: 10000
+cn: wasl2
+
+dn: cn=wasl3,dc=ibm,dc=com
+objectClass: posixGroup
+gidNumber: 10001
+cn: wasl3
